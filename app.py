@@ -27,7 +27,7 @@ freeword = "肉"
 url = api.format(key=GURUNAVI_KEY_ID, freeword=freeword)
 data = requests.get(url)
 data_json = json.loads(data.text)
-firstshop = data_json["rest"][0][url]
+firstshop = data_json["rest"][0]["url"]
 
 @app.route("/callback", methods=['POST'])
 def callback():
