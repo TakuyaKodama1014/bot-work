@@ -59,7 +59,7 @@ def response_message(event):
 #        template=CarouselTemplate(columns=notes),
 #    )
 
-    messages = TextSendMessage(text=event.message.text)
+    messages = TemplateSendMessage(text=event.message.text)
 
     line_bot_api.reply_message(event.reply_token, messages=messages)
 
