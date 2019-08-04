@@ -54,10 +54,12 @@ def response_message(event):
                             actions=[
                                 {"type": "message", "label": "サイトURL", "text": "https://renttle.jp/notes/kota/5"}])]
 
-    messages = TemplateSendMessage(
-        alt_text='template',
-        template=CarouselTemplate(columns=notes),
-    )
+#    messages = TemplateSendMessage(
+#        alt_text='template',
+#        template=CarouselTemplate(columns=notes),
+#    )
+
+    messages = TextSendMessage(text=event.message.text)
 
     line_bot_api.reply_message(event.reply_token, messages=messages)
 
