@@ -54,16 +54,8 @@ def response_message(event):
     secondshop = data_json["rest"][1]["url"]
     thirdshop = data_json["rest"][2]["url"]
 
-    if checktext in ['肉', 'お肉', 'にく', 'ニク', 'おにく']:
-        niku = firstshop + '\n' + secondshop + '\n' + thirdshop
-        messages = TextSendMessage(text=niku)
-    elif checktext in ['魚', 'お魚', 'さかな', 'サカナ', 'おさかな']:
-        s = 'Line1\nLine2\nLine3'
-        messages = TextSendMessage(text=s)
-    else:
-        bourbon = 'やあ （´・ω・｀)ようこそ、バーボンハウスへ。\nこのテキーラはサービスだから、まず飲んで落ち着いて欲しい。\nうん、「また」なんだ。済まない。\n仏の顔もって言うしね、謝って許してもらおうとも思っていない。\nでも、このスレタイを見たとき、君は、きっと言葉では言い表せない「ときめき」みたいなものを感じてくれたと思う。\n殺伐とした世の中で、そういう気持ちを忘れないで欲しいそう思って、このスレを立てたんだ。\nじゃあ、注文を聞こうか。'
-        messages = TextSendMessage(text=bourbon)
-
+    shops = firstshop + '\n\n' + secondshop + '\n\n' + thirdshop
+    messages = TextSendMessage(text=shops)
     line_bot_api.reply_message(event.reply_token, messages=messages)
 
 if __name__ == "__main__":
