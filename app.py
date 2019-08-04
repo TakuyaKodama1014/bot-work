@@ -22,13 +22,6 @@ GURUNAVI_KEY_ID = os.environ["GURUNAVI_KEY_ID"]
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
-api = "https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid={key}&freeword={freeword}"
-freeword = "肉"
-url = api.format(key=GURUNAVI_KEY_ID, freeword=freeword)
-data = requests.get(url)
-data_json = json.loads(data.text)
-firstshop = data_json["rest"][0]["url"]
-
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -46,13 +39,30 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def response_message(event):
     checktext = event.message.text
+    if '@' in checktext:
+        freeword = checktext.replace('@', ',')
+    elif '＠' in checktext:
+        freeword = checktext.replace('＠', ',')
+    else:
+        freeword = checktext
+
+    api = "https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid={key}&freeword={freeword}"
+    url = api.format(key=GURUNAVI_KEY_ID, freeword=freeword)
+    data = requests.get(url)
+    data_json = json.loads(data.text)
+    firstshop = data_json["rest"][0]["url"]
+    secondshop = data_json["rest"][1]["url"]
+    thirdshop = data_json["rest"][2]["url"]
+
     if checktext in ['肉', 'お肉', 'にく', 'ニク', 'おにく']:
-        messages = TextSendMessage(text=firstshop)
+        niku = firstshop + '\n' + secondshop + '\n' + thirdshop
+        messages = TextSendMessage(text=niku)
     elif checktext in ['魚', 'お魚', 'さかな', 'サカナ', 'おさかな']:
         s = 'Line1\nLine2\nLine3'
         messages = TextSendMessage(text=s)
     else:
-        messages = TextSendMessage(text='やあ （´・ω・｀)ようこそ、バーボンハウスへ。このテキーラはサービスだから、まず飲んで落ち着いて欲しい。うん、「また」なんだ。済まない。仏の顔もって言うしね、謝って許してもらおうとも思っていない。でも、このスレタイを見たとき、君は、きっと言葉では言い表せない「ときめき」みたいなものを感じてくれたと思う。殺伐とした世の中で、そういう気持ちを忘れないで欲しいそう思って、このスレを立てたんだ。じゃあ、注文を聞こうか。')        
+        bourbon = 'やあ （´・ω・｀)ようこそ、バーボンハウスへ。\nこのテキーラはサービスだから、まず飲んで落ち着いて欲しい。\nうん、「また」なんだ。済まない。\n仏の顔もって言うしね、謝って許してもらおうとも思っていない。\nでも、このスレタイを見たとき、君は、きっと言葉では言い表せない「ときめき」みたいなものを感じてくれたと思う。\n殺伐とした世の中で、そういう気持ちを忘れないで欲しいそう思って、このスレを立てたんだ。\nじゃあ、注文を聞こうか。'
+        messages = TextSendMessage(text=bourbon)
 
     line_bot_api.reply_message(event.reply_token, messages=messages)
 
